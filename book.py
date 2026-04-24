@@ -2,12 +2,15 @@ import sys
 from datetime import datetime, timedelta
 from playwright.sync_api import Playwright, sync_playwright
 
-FIRST_NAME = "hi"
-LAST_NAME = "hi"
-NETID = "1234567"
-EMAIL_1 = "a@u.northwestern.edu"
-EMAIL_2 = "b@u.northwestern.edu"
-EMAIL_3 = "c@u.northwestern.edu"
+FIRST_NAME = "hello"
+LAST_NAME = "hello"
+target_date = datetime.now() + timedelta(days=7)
+NETID = target_date.strftime("%Y%j")
+email_date = target_date.strftime("%m%d%Y")
+EMAIL_1 = f"{email_date}a@u.northwestern.edu"
+EMAIL_2 = f"{email_date}b@u.northwestern.edu"
+EMAIL_3 = f"{email_date}c@u.northwestern.edu"
+
 
 # gets date 7 days from now
 target_date = datetime.now() + timedelta(days=7)
@@ -23,25 +26,28 @@ next_date_value_str = (target_date + timedelta(days=1)).strftime("%Y-%m-%d")
 print(f"Targeting bookings for date: {date_label_str}")
 
 # dynamic date for buttons
-label_1_click = f"12:00pm {date_label_str} - Mudd 2155 - Available"
-label_1_dropdown = f"Mudd 2155: 12:00pm {date_label_str}"
+label_1_click = f"12:00pm {date_label_str} - Mudd 2148 - Available"
+label_1_dropdown = f"Mudd 2148: 12:00pm {date_label_str}"
 value_1_dropdown = f"{date_value_str} 16:00:00"
 
-label_2_click = f"4:00pm {date_label_str} - Mudd 2155 - Available"
-label_2_dropdown = f"Mudd 2155: 4:00pm {date_label_str}"
+label_2_click = f"4:00pm {date_label_str} - Mudd 2148 - Available"
+label_2_dropdown = f"Mudd 2148: 4:00pm {date_label_str}"
 value_2_dropdown = f"{date_value_str} 20:00:00"
 
-label_3_click = f"8:00pm {date_label_str} - Mudd 2155 - Available"
-label_3_dropdown = f"Mudd 2155: 8:00pm {date_label_str}"
+label_3_click = f"8:00pm {date_label_str} - Mudd 2148 - Available"
+label_3_dropdown = f"Mudd 2148: 8:00pm {date_label_str}"
 value_3_dropdown = f"{next_date_value_str} 00:00:00"
 
 def nav_days(page, days: int) -> None:
     for i in range(days):
-        page.get_by_role("button", name="Next", exact=True).click()
-        print(f"  Clicked 'Next' {i+1}/{days}")
+        page.locator("button.fc-next-button").click()
+    
+        page.wait_for_load_state("networkidle")
+        
+        print(f"  Clicked 'Next' {i+1}/{days} and waited for load")
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=True) 
+    browser = playwright.chromium.launch(headless=False) 
     context = browser.new_context()
     page = context.new_page()
 
