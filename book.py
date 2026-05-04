@@ -47,7 +47,7 @@ def nav_days(page, days: int) -> None:
         print(f"  Clicked 'Next' {i+1}/{days} and waited for load")
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False) 
+    browser = playwright.chromium.launch(headless=True) 
     context = browser.new_context()
     page = context.new_page()
 
